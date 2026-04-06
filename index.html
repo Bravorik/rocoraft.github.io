@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rocoraft — Comic E-Books for Everyone</title>
+<link href="https://fonts.googleapis.com/css2?family=Norwester&family=DM+Sans:wght@400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Norwester';src:url('norwester.otf') format('opentype');}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --red:#E63946;--yellow:#FFD60A;--blue:#4361EE;--green:#06D6A0;
+  --dark:#0D0D0D;--card:#1A1A1A;--card2:#222;
+  --text:#FFFDF0;--muted:#A09880;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+
+/* HALFTONE BG PATTERN */
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;z-index:0;}
+
+/* ANIMATED BLOBS */
+.animated-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.12;}
+.blob1{width:500px;height:500px;background:#E63946;top:-100px;right:-100px;animation:b1 12s ease-in-out infinite;}
+.blob2{width:500px;height:500px;background:#4361EE;bottom:-100px;left:-100px;animation:b2 15s ease-in-out infinite;}
+.blob3{width:300px;height:300px;background:#FFD60A;top:50%;left:50%;transform:translate(-50%,-50%);animation:b3 9s ease-in-out infinite;}
+@keyframes b1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-60px,50px) scale(1.1);}}
+@keyframes b2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(60px,-50px) scale(1.08);}}
+@keyframes b3{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.35);}}
+
+/* NAV */
+nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:2px solid rgba(255,214,10,0.2);position:sticky;top:0;background:rgba(13,13,13,0.95);backdrop-filter:blur(14px);z-index:100;position:relative;}
+.logo{font-family:'Norwester',sans-serif;font-size:1.7rem;letter-spacing:3px;background:linear-gradient(90deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+.nav-links{display:flex;gap:1.5rem;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.88rem;letter-spacing:0.05em;transition:color 0.2s;font-family:'Syne',sans-serif;font-weight:700;}
+.nav-links a:hover,.nav-links a.active{color:var(--yellow);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;z-index:201;}
+.hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+
+/* SIDE MENU */
+.side-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:198;opacity:0;transition:opacity 0.3s;}
+.side-overlay.open{display:block;opacity:1;}
+.side-menu{position:fixed;top:0;right:-280px;width:260px;height:100vh;background:#0D0D0D;border-left:2px solid rgba(255,214,10,0.2);z-index:199;transition:right 0.35s cubic-bezier(0.4,0,0.2,1);padding:5rem 1.5rem 2rem;display:flex;flex-direction:column;gap:0.5rem;}
+.side-menu.open{right:0;}
+.side-menu a{display:flex;align-items:center;gap:0.85rem;color:var(--muted);text-decoration:none;font-size:1rem;padding:0.75rem 1rem;border-radius:12px;transition:all 0.2s;font-family:'Syne',sans-serif;font-weight:700;}
+.side-menu a:hover,.side-menu a.active{background:rgba(255,214,10,0.1);color:var(--yellow);}
+.menu-icon{font-size:1.2rem;width:28px;text-align:center;}
+.side-close{position:absolute;top:1.2rem;right:1.2rem;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:0.5rem;}
+
+/* INTRO */
+#intro{position:fixed;inset:0;background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.8s ease,visibility 0.8s ease;}
+#intro.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.intro-name{font-family:'Norwester',sans-serif;font-size:clamp(3rem,10vw,7rem);background:linear-gradient(135deg,var(--red),var(--yellow),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px;min-height:1.2em;}
+.intro-cursor{display:inline-block;width:4px;height:0.85em;background:var(--yellow);margin-left:4px;animation:blink 0.7s step-end infinite;vertical-align:middle;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.intro-bar{width:0;height:3px;margin-top:1.5rem;background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue));border-radius:10px;transition:width 1s ease;}
+
+/* CONTENT */
+.content{position:relative;z-index:1;}
+
+/* HERO */
+.hero{min-height:95vh;display:flex;flex-direction:column;justify-content:center;padding:5rem 2rem 3rem;position:relative;overflow:hidden;}
+.hero-tag{display:inline-block;background:rgba(255,214,10,0.12);border:2px solid rgba(255,214,10,0.4);color:var(--yellow);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.4rem 1rem;border-radius:6px;margin-bottom:1.5rem;width:fit-content;font-family:'Syne',sans-serif;font-weight:700;}
+.hero h1{font-family:'Norwester',sans-serif;font-size:clamp(3rem,9vw,7rem);line-height:1.0;margin-bottom:1.5rem;letter-spacing:2px;}
+.hero h1 .line1{color:var(--text);}
+.hero h1 .line2{background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero h1 .line3{background:linear-gradient(135deg,var(--blue),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{font-size:clamp(0.95rem,2vw,1.15rem);color:var(--muted);max-width:520px;margin-bottom:2.5rem;line-height:1.8;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,var(--red),var(--yellow));color:#0D0D0D;font-weight:900;font-family:'Norwester',sans-serif;padding:0.9rem 2rem;border-radius:8px;border:none;cursor:pointer;font-size:1rem;letter-spacing:1px;transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;display:inline-block;}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(230,57,70,0.4);}
+.btn-outline{background:transparent;color:var(--text);font-weight:700;padding:0.9rem 2rem;border-radius:8px;border:2px solid rgba(255,255,255,0.15);cursor:pointer;font-size:0.95rem;transition:all 0.2s;text-decoration:none;display:inline-block;font-family:'Syne',sans-serif;}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+
+/* STATS BAR */
+.stats-bar{max-width:960px;margin:0 auto;padding:0 2rem 5rem;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);}
+.stat-item{background:var(--card);padding:1.8rem;text-align:center;}
+.stat-num{font-family:'Norwester',sans-serif;font-size:2.2rem;letter-spacing:1px;}
+.stat-num.red{color:var(--red);}
+.stat-num.yellow{color:var(--yellow);}
+.stat-num.blue{color:var(--blue);}
+.stat-num.green{color:var(--green);}
+.stat-label{color:var(--muted);font-size:0.8rem;margin-top:0.3rem;}
+
+/* GENRES */
+.section{padding:5rem 2rem;max-width:960px;margin:0 auto;}
+.section-label{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--yellow);margin-bottom:1rem;display:block;font-family:'Syne',sans-serif;font-weight:700;}
+h2{font-family:'Norwester',sans-serif;font-size:clamp(1.8rem,5vw,3rem);margin-bottom:1.5rem;line-height:1.15;letter-spacing:1px;}
+.genre-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.2rem;margin-top:2rem;}
+.genre-card{border-radius:16px;padding:1.8rem;cursor:pointer;transition:transform 0.2s;text-decoration:none;display:block;position:relative;overflow:hidden;}
+.genre-card:hover{transform:translateY(-4px);}
+.genre-card.action{background:linear-gradient(135deg,#3d0a0e,#6b0f14);border:1px solid rgba(230,57,70,0.3);}
+.genre-card.fantasy{background:linear-gradient(135deg,#0a0d3d,#0f1468);border:1px solid rgba(67,97,238,0.3);}
+.genre-card.horror{background:linear-gradient(135deg,#1a0a2e,#2d0f4a);border:1px solid rgba(168,85,247,0.3);}
+.genre-card.comedy{background:linear-gradient(135deg,#3d3200,#6b5700);border:1px solid rgba(255,214,10,0.3);}
+.genre-card.scifi{background:linear-gradient(135deg,#003d2e,#006b52);border:1px solid rgba(6,214,160,0.3);}
+.genre-card.romance{background:linear-gradient(135deg,#3d001e,#6b0035);border:1px solid rgba(255,60,172,0.3);}
+.genre-icon{font-size:2rem;margin-bottom:0.75rem;display:block;}
+.genre-card h3{font-family:'Norwester',sans-serif;font-size:1.2rem;letter-spacing:1px;margin-bottom:0.3rem;}
+.genre-card.action h3{color:#ff6b7a;}
+.genre-card.fantasy h3{color:#7b9eff;}
+.genre-card.horror h3{color:#c084fc;}
+.genre-card.comedy h3{color:var(--yellow);}
+.genre-card.scifi h3{color:var(--green);}
+.genre-card.romance h3{color:#ff6eb4;}
+.genre-card p{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+.genre-badge{position:absolute;top:1rem;right:1rem;font-size:0.68rem;font-family:'Norwester',sans-serif;letter-spacing:1px;padding:0.2rem 0.6rem;border-radius:4px;}
+.badge-new{background:var(--green);color:#003d2e;}
+.badge-hot{background:var(--red);color:#fff;}
+
+/* FEATURED COMIC */
+.featured-section{max-width:960px;margin:0 auto;padding:0 2rem 5rem;}
+.featured-card{background:var(--card);border:2px solid rgba(255,214,10,0.2);border-radius:20px;padding:2.5rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;position:relative;overflow:hidden;}
+.featured-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(230,57,70,0.05),rgba(67,97,238,0.05));pointer-events:none;}
+.comic-cover{width:120px;height:160px;border-radius:12px;background:linear-gradient(135deg,#1a0a2e,#3d0a0e);border:2px solid rgba(255,214,10,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:coverFloat 3s ease-in-out infinite;}
+@keyframes coverFloat{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-8px) rotate(2deg);}}
+.comic-cover-inner{text-align:center;}
+.comic-cover-inner div:first-child{font-size:2.5rem;margin-bottom:0.5rem;}
+.comic-cover-inner div:last-child{font-family:'Norwester',sans-serif;font-size:0.7rem;letter-spacing:2px;color:var(--yellow);}
+.featured-label{display:inline-block;background:var(--yellow);color:#0D0D0D;font-family:'Norwester',sans-serif;font-size:0.7rem;letter-spacing:2px;padding:0.2rem 0.7rem;border-radius:4px;margin-bottom:0.75rem;}
+.featured-card h3{font-family:'Norwester',sans-serif;font-size:1.8rem;letter-spacing:1px;margin-bottom:0.5rem;background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.featured-card p{color:var(--muted);font-size:0.9rem;line-height:1.8;margin-bottom:1.2rem;}
+.comic-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.meta-tag{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--muted);font-size:0.75rem;padding:0.25rem 0.75rem;border-radius:100px;}
+.read-now{background:linear-gradient(135deg,var(--red),var(--yellow));color:#0D0D0D;font-family:'Norwester',sans-serif;font-size:0.95rem;letter-spacing:1px;padding:0.7rem 1.8rem;border-radius:8px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:transform 0.2s;}
+.read-now:hover{transform:translateY(-2px);}
+
+/* HOW IT WORKS */
+.how-section{max-width:960px;margin:0 auto;padding:0 2rem 5rem;}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:2rem;}
+.step-card{background:var(--card);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;text-align:center;transition:transform 0.2s,border-color 0.2s;}
+.step-card:hover{transform:translateY(-3px);border-color:rgba(255,214,10,0.3);}
+.step-num{font-family:'Norwester',sans-serif;font-size:3rem;letter-spacing:1px;margin-bottom:0.5rem;}
+.step-card:nth-child(1) .step-num{color:var(--red);}
+.step-card:nth-child(2) .step-num{color:var(--yellow);}
+.step-card:nth-child(3) .step-num{color:var(--blue);}
+.step-card:nth-child(4) .step-num{color:var(--green);}
+.step-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:0.4rem;color:var(--text);}
+.step-card p{font-size:0.84rem;color:var(--muted);line-height:1.6;}
+
+/* CONTACT */
+.contact-section{padding:5rem 2rem 6rem;max-width:680px;margin:0 auto;text-align:center;}
+.contact-box{background:var(--card);border:2px solid rgba(255,214,10,0.15);border-radius:24px;padding:2.5rem 2rem;margin-top:2rem;}
+.contact-box p{color:var(--muted);margin-bottom:2rem;font-size:0.95rem;line-height:1.7;}
+.contact-email{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,214,10,0.08);border:2px solid rgba(255,214,10,0.25);color:var(--yellow);padding:0.85rem 1.8rem;border-radius:8px;font-size:0.9rem;font-weight:700;text-decoration:none;transition:background 0.2s;word-break:break-all;font-family:'Syne',sans-serif;}
+.contact-email:hover{background:rgba(255,214,10,0.15);}
+
+/* FOOTER */
+footer{text-align:center;padding:2rem 1rem;border-top:1px solid rgba(255,255,255,0.06);color:var(--muted);font-size:0.8rem;}
+footer span{background:linear-gradient(90deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Norwester',sans-serif;letter-spacing:1px;}
+.footer-links{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;transition:color 0.2s;}
+.footer-links a:hover{color:var(--yellow);}
+
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--dark);}
+::-webkit-scrollbar-thumb{background:#333;border-radius:10px;}
+
+@media(max-width:768px){
+  nav{padding:1rem 1.25rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero{padding:5rem 1.25rem 2rem;}
+  .section,.stats-bar,.featured-section,.how-section,.contact-section{padding-left:1.25rem;padding-right:1.25rem;}
+  .featured-card{grid-template-columns:1fr;text-align:center;}
+  .comic-cover{margin:0 auto;}
+  .read-now{width:100%;}
+}
+@media(max-width:480px){
+  .hero-btns{flex-direction:column;}
+  .btn-primary,.btn-outline{text-align:center;}
+  .genre-grid{grid-template-columns:1fr 1fr;}
+  .steps-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="animated-bg">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+</div>
+
+<div id="intro">
+  <div class="intro-name" id="introText"></div>
+  <div class="intro-cursor"></div>
+  <div class="intro-bar" id="introBar"></div>
+</div>
+
+<div class="side-overlay" id="sideOverlay" onclick="closeMenu()"></div>
+<div class="side-menu" id="sideMenu">
+  <button class="side-close" onclick="closeMenu()">✕</button>
+  <a href="index.html" class="active" onclick="closeMenu()"><span class="menu-icon">🏠</span>Home</a>
+  <a href="comics.html" onclick="closeMenu()"><span class="menu-icon">📚</span>Comics</a>
+  <a href="about.html" onclick="closeMenu()"><span class="menu-icon">👤</span>About</a>
+  <a href="privacy.html" onclick="closeMenu()"><span class="menu-icon">🔒</span>Privacy</a>
+</div>
+
+<div class="content">
+<nav>
+  <a href="index.html" class="logo">ROCORAFT</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="comics.html">Comics</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="privacy.html">Privacy</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag fade-up">Comic E-Books — Read Online Free</div>
+  <h1 class="fade-up">
+    <span class="line1">YOUR WORLD.</span><br>
+    <span class="line2">YOUR STORIES.</span><br>
+    <span class="line3">YOUR COMICS.</span>
+  </h1>
+  <p class="fade-up">Rocoraft is your ultimate destination for comic e-books across all genres. Action, Fantasy, Horror, Comedy and more — read online, anytime, anywhere. Completely free.</p>
+  <div class="hero-btns fade-up">
+    <a href="comics.html" class="btn-primary">Start Reading</a>
+    <a href="about.html" class="btn-outline">About Rocoraft</a>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stats-grid fade-up">
+    <div class="stat-item"><div class="stat-num red">500+</div><div class="stat-label">Comics Available</div></div>
+    <div class="stat-item"><div class="stat-num yellow">6</div><div class="stat-label">Genres</div></div>
+    <div class="stat-item"><div class="stat-num blue">10K+</div><div class="stat-label">Readers</div></div>
+    <div class="stat-item"><div class="stat-num green">Free</div><div class="stat-label">Always</div></div>
+  </div>
+</div>
+
+<section class="section" id="genres">
+  <span class="section-label fade-up">Browse by Genre</span>
+  <h2 class="fade-up">Every story.<br>Every world.</h2>
+  <div class="genre-grid">
+    <a href="comics.html" class="genre-card action fade-up">
+      <span class="genre-badge badge-hot">HOT</span>
+      <span class="genre-icon">⚡</span>
+      <h3>Action</h3>
+      <p>Epic battles, heroic journeys and non-stop thrills.</p>
+    </a>
+    <a href="comics.html" class="genre-card fantasy fade-up">
+      <span class="genre-badge badge-new">NEW</span>
+      <span class="genre-icon">✨</span>
+      <h3>Fantasy</h3>
+      <p>Dragons, magic and worlds beyond imagination.</p>
+    </a>
+    <a href="comics.html" class="genre-card horror fade-up">
+      <span class="genre-icon">👻</span>
+      <h3>Horror</h3>
+      <p>Dark tales that keep you up at night.</p>
+    </a>
+    <a href="comics.html" class="genre-card comedy fade-up">
+      <span class="genre-badge badge-hot">HOT</span>
+      <span class="genre-icon">😂</span>
+      <h3>Comedy</h3>
+      <p>Laugh out loud stories for everyone.</p>
+    </a>
+    <a href="comics.html" class="genre-card scifi fade-up">
+      <span class="genre-badge badge-new">NEW</span>
+      <span class="genre-icon">🚀</span>
+      <h3>Sci-Fi</h3>
+      <p>Future tech, space and mind-bending science.</p>
+    </a>
+    <a href="comics.html" class="genre-card romance fade-up">
+      <span class="genre-icon">💫</span>
+      <h3>Romance</h3>
+      <p>Heartfelt stories of love and connection.</p>
+    </a>
+  </div>
+</section>
+
+<div class="featured-section">
+  <span class="section-label fade-up">Featured This Week</span>
+  <div class="featured-card fade-up">
+    <div class="comic-cover">
+      <div class="comic-cover-inner">
+        <div style="font-size:2.5rem;">⚡</div>
+        <div style="font-family:'Norwester',sans-serif;font-size:0.65rem;letter-spacing:2px;color:var(--yellow);">ROCORAFT</div>
+      </div>
+    </div>
+    <div>
+      <div class="featured-label">FEATURED</div>
+      <h3>Thunder Legion — Rise of the Storm</h3>
+      <p>When the ancient storm gods return to reclaim the earth, only a ragtag team of unlikely heroes stands between humanity and total annihilation. An epic action adventure that will keep you on the edge of your seat from page one.</p>
+      <div class="comic-meta">
+        <span class="meta-tag">Action</span>
+        <span class="meta-tag">Adventure</span>
+        <span class="meta-tag">48 Pages</span>
+        <span class="meta-tag">Free to Read</span>
+      </div>
+      <a href="#" class="read-now">Read Now — Free</a>
+    </div>
+  </div>
+</div>
+
+<div class="how-section">
+  <span class="section-label fade-up">How It Works</span>
+  <h2 class="fade-up">Reading made<br>ridiculously simple.</h2>
+  <div class="steps-grid">
+    <div class="step-card fade-up"><div class="step-num">01</div><h3>Browse</h3><p>Explore hundreds of comics across all genres — new titles added regularly.</p></div>
+    <div class="step-card fade-up"><div class="step-num">02</div><h3>Pick</h3><p>Choose your favourite genre and find a story that speaks to you.</p></div>
+    <div class="step-card fade-up"><div class="step-num">03</div><h3>Read</h3><p>Read online instantly — no download needed, no account required.</p></div>
+    <div class="step-card fade-up"><div class="step-num">04</div><h3>Enjoy</h3><p>Completely free. Always. Because great stories should be for everyone.</p></div>
+  </div>
+</div>
+
+<div class="contact-section" id="contact">
+  <span class="section-label fade-up">Contact</span>
+  <h2 class="fade-up">Got a story idea<br>or want to partner?</h2>
+  <div class="contact-box fade-up">
+    <p>Whether you are a comic artist, writer, publisher or just a fan with a great idea — we would love to hear from you. Rocoraft is always looking for new stories to share with the world.</p>
+    <a href="mailto:rocoraft.business@gmail.com" class="contact-email">rocoraft.business@gmail.com</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="comics.html">Comics</a>
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="#contact">Contact</a>
+  </div>
+  Made by <span>ROCORAFT TEAM</span> &nbsp;·&nbsp; 2026
+</footer>
+</div>
+
+<script>
+const text="ROCORAFT";
+let i=0;
+const el=document.getElementById('introText');
+const bar=document.getElementById('introBar');
+const intro=document.getElementById('intro');
+function type(){
+  if(i<text.length){el.textContent+=text[i];i++;setTimeout(type,130);}
+  else{bar.style.width='300px';setTimeout(()=>{intro.classList.add('hide');document.querySelectorAll('.fade-up').forEach((el,idx)=>{setTimeout(()=>el.classList.add('visible'),idx*80);});},900);}
+}
+setTimeout(type,400);
+const observer=new IntersectionObserver(e=>{e.forEach(i=>{if(i.isIntersecting)i.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('sideMenu').classList.toggle('open');document.getElementById('sideOverlay').classList.toggle('open');}
+function closeMenu(){document.getElementById('hamburger').classList.remove('open');document.getElementById('sideMenu').classList.remove('open');document.getElementById('sideOverlay').classList.remove('open');}
+</script>
+</body>
+</html>
