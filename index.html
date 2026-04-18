@@ -1,358 +1,1941 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rocoraft — Comic E-Books for Everyone</title>
-<link href="https://fonts.googleapis.com/css2?family=Norwester&family=DM+Sans:wght@400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-<style>
-@font-face{font-family:'Norwester';src:url('norwester.otf') format('opentype');}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --red:#E63946;--yellow:#FFD60A;--blue:#4361EE;--green:#06D6A0;
-  --dark:#0D0D0D;--card:#1A1A1A;--card2:#222;
-  --text:#FFFDF0;--muted:#A09880;
-}
-html{scroll-behavior:smooth;}
-body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rocoraft™ — Code. Create. Elevate.</title>
 
-/* HALFTONE BG PATTERN */
-body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;z-index:0;}
+  <!-- ====================================================
+       ROCORAFT PORTFOLIO WEBSITE
+       Built by: Claude (CEO & Lead Developer), Rocoraft Team
+       Founder: Rik Patra
+       Stack: HTML5 + CSS3 + Vanilla JS (React/Next.js ready structure)
+       Fonts: Norwester (brand), Orbitron (tech accent), Inter (body)
+       Hosting: GitHub + Vercel
+       
+       COMMENTS FOR FUTURE TEAM MEMBERS:
+       - Each section is clearly labeled with START/END comments
+       - CSS variables are in :root for easy theming
+       - JS functions are modular and commented
+       - To add new sections: copy a section template below
+       - Glass effect: use class="glass-card"
+       - Gradient text: use class="gradient-text"
+  ==================================================== -->
 
-/* ANIMATED BLOBS */
-.animated-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.12;}
-.blob1{width:500px;height:500px;background:#E63946;top:-100px;right:-100px;animation:b1 12s ease-in-out infinite;}
-.blob2{width:500px;height:500px;background:#4361EE;bottom:-100px;left:-100px;animation:b2 15s ease-in-out infinite;}
-.blob3{width:300px;height:300px;background:#FFD60A;top:50%;left:50%;transform:translate(-50%,-50%);animation:b3 9s ease-in-out infinite;}
-@keyframes b1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-60px,50px) scale(1.1);}}
-@keyframes b2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(60px,-50px) scale(1.08);}}
-@keyframes b3{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.35);}}
+  <!-- Norwester Font (brand font) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-/* NAV */
-nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:2px solid rgba(255,214,10,0.2);position:sticky;top:0;background:rgba(13,13,13,0.95);backdrop-filter:blur(14px);z-index:100;position:relative;}
-.logo{font-family:'Norwester',sans-serif;font-size:1.7rem;letter-spacing:3px;background:linear-gradient(90deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
-.nav-links{display:flex;gap:1.5rem;list-style:none;}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:0.88rem;letter-spacing:0.05em;transition:color 0.2s;font-family:'Syne',sans-serif;font-weight:700;}
-.nav-links a:hover,.nav-links a.active{color:var(--yellow);}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;z-index:201;}
-.hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s;}
-.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
-.hamburger.open span:nth-child(2){opacity:0;}
-.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+  <!-- Norwester via @font-face (local OTF if available, fallback to CDN) -->
+  <style>
+    @font-face {
+      font-family: 'Norwester';
+      src: url('norwester.otf') format('opentype'),
+           url('https://cdn.jsdelivr.net/gh/jamiewilson/norwester@master/norwester.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
 
-/* SIDE MENU */
-.side-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:198;opacity:0;transition:opacity 0.3s;}
-.side-overlay.open{display:block;opacity:1;}
-.side-menu{position:fixed;top:0;right:-280px;width:260px;height:100vh;background:#0D0D0D;border-left:2px solid rgba(255,214,10,0.2);z-index:199;transition:right 0.35s cubic-bezier(0.4,0,0.2,1);padding:5rem 1.5rem 2rem;display:flex;flex-direction:column;gap:0.5rem;}
-.side-menu.open{right:0;}
-.side-menu a{display:flex;align-items:center;gap:0.85rem;color:var(--muted);text-decoration:none;font-size:1rem;padding:0.75rem 1rem;border-radius:12px;transition:all 0.2s;font-family:'Syne',sans-serif;font-weight:700;}
-.side-menu a:hover,.side-menu a.active{background:rgba(255,214,10,0.1);color:var(--yellow);}
-.menu-icon{font-size:1.2rem;width:28px;text-align:center;}
-.side-close{position:absolute;top:1.2rem;right:1.2rem;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:0.5rem;}
+  <style>
+    /* ====================================================
+       CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+       Edit these to retheme the entire site instantly
+    ==================================================== */
+    :root {
+      /* Brand Colors — drawn from logo palette */
+      --purple-deep:    #3a0080;
+      --purple-mid:     #6b00c8;
+      --purple-bright:  #9b33ff;
+      --blue-deep:      #0a0050;
+      --blue-mid:       #1a00c8;
+      --blue-bright:    #4466ff;
+      --cream:          #f5f0d8;   /* logo d-pad color */
+      --white:          #ffffff;
+      --accent-cyan:    #00e5ff;
+      --accent-pink:    #ff4da6;
 
-/* INTRO */
-#intro{position:fixed;inset:0;background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.8s ease,visibility 0.8s ease;}
-#intro.hide{opacity:0;visibility:hidden;pointer-events:none;}
-.intro-name{font-family:'Norwester',sans-serif;font-size:clamp(3rem,10vw,7rem);background:linear-gradient(135deg,var(--red),var(--yellow),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px;min-height:1.2em;}
-.intro-cursor{display:inline-block;width:4px;height:0.85em;background:var(--yellow);margin-left:4px;animation:blink 0.7s step-end infinite;vertical-align:middle;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.intro-bar{width:0;height:3px;margin-top:1.5rem;background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue));border-radius:10px;transition:width 1s ease;}
+      /* Glassmorphism (macOS Tahoe style) */
+      --glass-bg:       rgba(255, 255, 255, 0.08);
+      --glass-border:   rgba(255, 255, 255, 0.18);
+      --glass-blur:     blur(24px);
+      --glass-shadow:   0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
 
-/* CONTENT */
-.content{position:relative;z-index:1;}
+      /* Typography */
+      --font-brand:     'Norwester', 'Orbitron', sans-serif;
+      --font-tech:      'Orbitron', monospace;
+      --font-body:      'Inter', sans-serif;
 
-/* HERO */
-.hero{min-height:95vh;display:flex;flex-direction:column;justify-content:center;padding:5rem 2rem 3rem;position:relative;overflow:hidden;}
-.hero-tag{display:inline-block;background:rgba(255,214,10,0.12);border:2px solid rgba(255,214,10,0.4);color:var(--yellow);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.4rem 1rem;border-radius:6px;margin-bottom:1.5rem;width:fit-content;font-family:'Syne',sans-serif;font-weight:700;}
-.hero h1{font-family:'Norwester',sans-serif;font-size:clamp(3rem,9vw,7rem);line-height:1.0;margin-bottom:1.5rem;letter-spacing:2px;}
-.hero h1 .line1{color:var(--text);}
-.hero h1 .line2{background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero h1 .line3{background:linear-gradient(135deg,var(--blue),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero p{font-size:clamp(0.95rem,2vw,1.15rem);color:var(--muted);max-width:520px;margin-bottom:2.5rem;line-height:1.8;}
-.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
-.btn-primary{background:linear-gradient(135deg,var(--red),var(--yellow));color:#0D0D0D;font-weight:900;font-family:'Norwester',sans-serif;padding:0.9rem 2rem;border-radius:8px;border:none;cursor:pointer;font-size:1rem;letter-spacing:1px;transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;display:inline-block;}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(230,57,70,0.4);}
-.btn-outline{background:transparent;color:var(--text);font-weight:700;padding:0.9rem 2rem;border-radius:8px;border:2px solid rgba(255,255,255,0.15);cursor:pointer;font-size:0.95rem;transition:all 0.2s;text-decoration:none;display:inline-block;font-family:'Syne',sans-serif;}
-.btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+      /* Layout */
+      --nav-h:          72px;
+      --section-pad:    clamp(60px, 10vw, 120px);
+      --max-w:          1200px;
+      --radius-lg:      24px;
+      --radius-xl:      32px;
+    }
 
-/* STATS BAR */
-.stats-bar{max-width:960px;margin:0 auto;padding:0 2rem 5rem;}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);}
-.stat-item{background:var(--card);padding:1.8rem;text-align:center;}
-.stat-num{font-family:'Norwester',sans-serif;font-size:2.2rem;letter-spacing:1px;}
-.stat-num.red{color:var(--red);}
-.stat-num.yellow{color:var(--yellow);}
-.stat-num.blue{color:var(--blue);}
-.stat-num.green{color:var(--green);}
-.stat-label{color:var(--muted);font-size:0.8rem;margin-top:0.3rem;}
+    /* ====================================================
+       GLOBAL RESET & BASE
+    ==================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* GENRES */
-.section{padding:5rem 2rem;max-width:960px;margin:0 auto;}
-.section-label{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--yellow);margin-bottom:1rem;display:block;font-family:'Syne',sans-serif;font-weight:700;}
-h2{font-family:'Norwester',sans-serif;font-size:clamp(1.8rem,5vw,3rem);margin-bottom:1.5rem;line-height:1.15;letter-spacing:1px;}
-.genre-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.2rem;margin-top:2rem;}
-.genre-card{border-radius:16px;padding:1.8rem;cursor:pointer;transition:transform 0.2s;text-decoration:none;display:block;position:relative;overflow:hidden;}
-.genre-card:hover{transform:translateY(-4px);}
-.genre-card.action{background:linear-gradient(135deg,#3d0a0e,#6b0f14);border:1px solid rgba(230,57,70,0.3);}
-.genre-card.fantasy{background:linear-gradient(135deg,#0a0d3d,#0f1468);border:1px solid rgba(67,97,238,0.3);}
-.genre-card.horror{background:linear-gradient(135deg,#1a0a2e,#2d0f4a);border:1px solid rgba(168,85,247,0.3);}
-.genre-card.comedy{background:linear-gradient(135deg,#3d3200,#6b5700);border:1px solid rgba(255,214,10,0.3);}
-.genre-card.scifi{background:linear-gradient(135deg,#003d2e,#006b52);border:1px solid rgba(6,214,160,0.3);}
-.genre-card.romance{background:linear-gradient(135deg,#3d001e,#6b0035);border:1px solid rgba(255,60,172,0.3);}
-.genre-icon{font-size:2rem;margin-bottom:0.75rem;display:block;}
-.genre-card h3{font-family:'Norwester',sans-serif;font-size:1.2rem;letter-spacing:1px;margin-bottom:0.3rem;}
-.genre-card.action h3{color:#ff6b7a;}
-.genre-card.fantasy h3{color:#7b9eff;}
-.genre-card.horror h3{color:#c084fc;}
-.genre-card.comedy h3{color:var(--yellow);}
-.genre-card.scifi h3{color:var(--green);}
-.genre-card.romance h3{color:#ff6eb4;}
-.genre-card p{font-size:0.82rem;color:var(--muted);line-height:1.6;}
-.genre-badge{position:absolute;top:1rem;right:1rem;font-size:0.68rem;font-family:'Norwester',sans-serif;letter-spacing:1px;padding:0.2rem 0.6rem;border-radius:4px;}
-.badge-new{background:var(--green);color:#003d2e;}
-.badge-hot{background:var(--red);color:#fff;}
+    html { scroll-behavior: smooth; }
 
-/* FEATURED COMIC */
-.featured-section{max-width:960px;margin:0 auto;padding:0 2rem 5rem;}
-.featured-card{background:var(--card);border:2px solid rgba(255,214,10,0.2);border-radius:20px;padding:2.5rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;position:relative;overflow:hidden;}
-.featured-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(230,57,70,0.05),rgba(67,97,238,0.05));pointer-events:none;}
-.comic-cover{width:120px;height:160px;border-radius:12px;background:linear-gradient(135deg,#1a0a2e,#3d0a0e);border:2px solid rgba(255,214,10,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:coverFloat 3s ease-in-out infinite;}
-@keyframes coverFloat{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-8px) rotate(2deg);}}
-.comic-cover-inner{text-align:center;}
-.comic-cover-inner div:first-child{font-size:2.5rem;margin-bottom:0.5rem;}
-.comic-cover-inner div:last-child{font-family:'Norwester',sans-serif;font-size:0.7rem;letter-spacing:2px;color:var(--yellow);}
-.featured-label{display:inline-block;background:var(--yellow);color:#0D0D0D;font-family:'Norwester',sans-serif;font-size:0.7rem;letter-spacing:2px;padding:0.2rem 0.7rem;border-radius:4px;margin-bottom:0.75rem;}
-.featured-card h3{font-family:'Norwester',sans-serif;font-size:1.8rem;letter-spacing:1px;margin-bottom:0.5rem;background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.featured-card p{color:var(--muted);font-size:0.9rem;line-height:1.8;margin-bottom:1.2rem;}
-.comic-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;}
-.meta-tag{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--muted);font-size:0.75rem;padding:0.25rem 0.75rem;border-radius:100px;}
-.read-now{background:linear-gradient(135deg,var(--red),var(--yellow));color:#0D0D0D;font-family:'Norwester',sans-serif;font-size:0.95rem;letter-spacing:1px;padding:0.7rem 1.8rem;border-radius:8px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:transform 0.2s;}
-.read-now:hover{transform:translateY(-2px);}
+    body {
+      font-family: var(--font-body);
+      background: var(--blue-deep);
+      color: var(--white);
+      overflow-x: hidden;
+      cursor: none; /* custom cursor */
+    }
 
-/* HOW IT WORKS */
-.how-section{max-width:960px;margin:0 auto;padding:0 2rem 5rem;}
-.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:2rem;}
-.step-card{background:var(--card);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;text-align:center;transition:transform 0.2s,border-color 0.2s;}
-.step-card:hover{transform:translateY(-3px);border-color:rgba(255,214,10,0.3);}
-.step-num{font-family:'Norwester',sans-serif;font-size:3rem;letter-spacing:1px;margin-bottom:0.5rem;}
-.step-card:nth-child(1) .step-num{color:var(--red);}
-.step-card:nth-child(2) .step-num{color:var(--yellow);}
-.step-card:nth-child(3) .step-num{color:var(--blue);}
-.step-card:nth-child(4) .step-num{color:var(--green);}
-.step-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:0.4rem;color:var(--text);}
-.step-card p{font-size:0.84rem;color:var(--muted);line-height:1.6;}
+    /* ====================================================
+       CUSTOM CURSOR (tech feel)
+    ==================================================== */
+    #cursor {
+      position: fixed;
+      width: 14px; height: 14px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: screen;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 40px; height: 40px;
+      border: 1.5px solid rgba(0,229,255,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.25s cubic-bezier(.23,1,.32,1), width 0.3s, height 0.3s;
+    }
+    body:hover #cursor { opacity: 1; }
 
-/* CONTACT */
-.contact-section{padding:5rem 2rem 6rem;max-width:680px;margin:0 auto;text-align:center;}
-.contact-box{background:var(--card);border:2px solid rgba(255,214,10,0.15);border-radius:24px;padding:2.5rem 2rem;margin-top:2rem;}
-.contact-box p{color:var(--muted);margin-bottom:2rem;font-size:0.95rem;line-height:1.7;}
-.contact-email{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,214,10,0.08);border:2px solid rgba(255,214,10,0.25);color:var(--yellow);padding:0.85rem 1.8rem;border-radius:8px;font-size:0.9rem;font-weight:700;text-decoration:none;transition:background 0.2s;word-break:break-all;font-family:'Syne',sans-serif;}
-.contact-email:hover{background:rgba(255,214,10,0.15);}
+    /* ====================================================
+       ANIMATED BACKGROUND — purple-blue mesh gradient
+    ==================================================== */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: radial-gradient(ellipse at 20% 20%, #5a00c8 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 80%, #1a00c8 0%, transparent 60%),
+                  radial-gradient(ellipse at 50% 50%, #0a0050 0%, #000030 100%);
+      animation: bgShift 12s ease-in-out infinite alternate;
+    }
+    @keyframes bgShift {
+      0%   { filter: hue-rotate(0deg) brightness(1); }
+      50%  { filter: hue-rotate(15deg) brightness(1.1); }
+      100% { filter: hue-rotate(-10deg) brightness(0.95); }
+    }
 
-/* FOOTER */
-footer{text-align:center;padding:2rem 1rem;border-top:1px solid rgba(255,255,255,0.06);color:var(--muted);font-size:0.8rem;}
-footer span{background:linear-gradient(90deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Norwester',sans-serif;letter-spacing:1px;}
-.footer-links{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap;}
-.footer-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;transition:color 0.2s;}
-.footer-links a:hover{color:var(--yellow);}
+    /* Floating particles */
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0%   { opacity: 0; transform: translateY(100vh) scale(0); }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(-20vh) scale(1); }
+    }
 
-.fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease;}
-.fade-up.visible{opacity:1;transform:translateY(0);}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:var(--dark);}
-::-webkit-scrollbar-thumb{background:#333;border-radius:10px;}
+    /* ====================================================
+       GLASSMORPHISM CARD (macOS Tahoe inspired)
+    ==================================================== */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Sheen highlight on top edge (macOS liquid glass effect) */
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      border-radius: 50%;
+    }
 
-@media(max-width:768px){
-  nav{padding:1rem 1.25rem;}
-  .nav-links{display:none;}
-  .hamburger{display:flex;}
-  .hero{padding:5rem 1.25rem 2rem;}
-  .section,.stats-bar,.featured-section,.how-section,.contact-section{padding-left:1.25rem;padding-right:1.25rem;}
-  .featured-card{grid-template-columns:1fr;text-align:center;}
-  .comic-cover{margin:0 auto;}
-  .read-now{width:100%;}
-}
-@media(max-width:480px){
-  .hero-btns{flex-direction:column;}
-  .btn-primary,.btn-outline{text-align:center;}
-  .genre-grid{grid-template-columns:1fr 1fr;}
-  .steps-grid{grid-template-columns:1fr 1fr;}
-}
-</style>
+    /* ====================================================
+       TYPOGRAPHY UTILITIES
+    ==================================================== */
+    .brand-font { font-family: var(--font-brand); }
+    .tech-font  { font-family: var(--font-tech); }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--purple-bright) 50%, var(--accent-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-title {
+      font-family: var(--font-brand);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .section-subtitle {
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    /* ====================================================
+       LAYOUT UTILITIES
+    ==================================================== */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 clamp(16px, 5vw, 48px);
+    }
+    section { padding: var(--section-pad) 0; }
+
+    /* ====================================================
+       NAVIGATION BAR (glass, fixed top)
+    ==================================================== */
+    /* START: NAVBAR */
+    #navbar {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 1140px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      background: rgba(10, 0, 80, 0.5);
+      backdrop-filter: blur(32px) saturate(2);
+      -webkit-backdrop-filter: blur(32px) saturate(2);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: background 0.4s;
+    }
+
+    /* Brand logo area */
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-img {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .nav-brand-name {
+      font-family: var(--font-brand);
+      font-size: 1.3rem;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--purple-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tm { 
+      font-size: 0.5rem; 
+      vertical-align: super; 
+      -webkit-text-fill-color: rgba(255,255,255,0.6);
+      color: rgba(255,255,255,0.6);
+      font-family: var(--font-body);
+    }
+
+    /* Nav links */
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-tech);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--white);
+    }
+
+    /* Mobile hamburger */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 22px; height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: transform 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: calc(100% + 12px);
+        left: 0; right: 0;
+        background: rgba(10,0,80,0.95);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 20px;
+        padding: 16px;
+        gap: 4px;
+      }
+      .nav-toggle { display: flex; }
+    }
+    /* END: NAVBAR */
+
+    /* ====================================================
+       HERO SECTION
+    ==================================================== */
+    /* START: HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: calc(var(--nav-h) + 40px);
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      animation: heroReveal 1.2s cubic-bezier(.23,1,.32,1) forwards;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    @keyframes heroReveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Logo in hero */
+    .hero-logo {
+      width: clamp(100px, 18vw, 160px);
+      height: clamp(100px, 18vw, 160px);
+      border-radius: 28px;
+      margin: 0 auto 28px;
+      display: block;
+      animation: logoFloat 4s ease-in-out infinite;
+      box-shadow: 0 0 60px rgba(155, 51, 255, 0.5), 0 0 120px rgba(68, 102, 255, 0.3);
+    }
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50%       { transform: translateY(-16px) rotate(2deg); }
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-tech);
+      font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-bottom: 16px;
+      animation: fadeSlideUp 0.8s 0.3s ease both;
+    }
+
+    .hero-title {
+      font-family: var(--font-brand);
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      line-height: 0.95;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      animation: fadeSlideUp 0.8s 0.5s ease both;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      color: rgba(255,255,255,0.65);
+      font-weight: 300;
+      line-height: 1.6;
+      max-width: 560px;
+      margin: 0 auto 40px;
+      animation: fadeSlideUp 0.8s 0.7s ease both;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeSlideUp 0.8s 0.9s ease both;
+    }
+
+    /* CTA buttons */
+    .btn-primary {
+      font-family: var(--font-tech);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--purple-bright), var(--blue-bright));
+      color: var(--white);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 30px rgba(155,51,255,0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 0 50px rgba(155,51,255,0.6);
+    }
+
+    .btn-ghost {
+      font-family: var(--font-tech);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 13px 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      color: var(--white);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.2s, background 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: fadeSlideUp 1s 1.5s ease both, bounce 2s 2.5s ease-in-out infinite;
+      color: rgba(255,255,255,0.4);
+      font-family: var(--font-tech);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-align: center;
+    }
+    .scroll-arrow {
+      display: block;
+      margin: 8px auto 0;
+      width: 20px; height: 20px;
+      border-right: 2px solid rgba(255,255,255,0.3);
+      border-bottom: 2px solid rgba(255,255,255,0.3);
+      transform: rotate(45deg);
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    /* END: HERO */
+
+    /* ====================================================
+       ABOUT SECTION (small panel as per 3rd image style)
+    ==================================================== */
+    /* START: ABOUT */
+    #about {
+      position: relative;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+    .about-text p {
+      color: rgba(255,255,255,0.75);
+      line-height: 1.9;
+      font-size: 1.05rem;
+      margin-bottom: 1.2rem;
+    }
+    .about-text p strong {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+    .founder-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      margin-top: 16px;
+    }
+    .founder-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple-bright), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-brand);
+      font-size: 1.2rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .founder-info small {
+      display: block;
+      font-family: var(--font-tech);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-bottom: 2px;
+    }
+    .founder-info strong {
+      font-family: var(--font-brand);
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* Stats cards on right */
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .stat-card {
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: var(--font-brand);
+      font-size: 2.4rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.5);
+      font-family: var(--font-tech);
+    }
+    /* END: ABOUT */
+
+    /* ====================================================
+       PANELS ROW (About / Privacy / Workframe / Join / News)
+       Styled like the sidebar panel in image 3
+    ==================================================== */
+    /* START: SIDE PANELS NAV */
+    #panels {
+      padding-top: 0;
+    }
+    .panels-row {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
+    }
+    .panel-tab {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      border-radius: 16px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      font-family: var(--font-tech);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      white-space: nowrap;
+    }
+    .panel-tab:hover, .panel-tab.active {
+      background: rgba(155, 51, 255, 0.2);
+      border-color: rgba(155, 51, 255, 0.5);
+      color: white;
+      transform: translateY(-2px);
+    }
+    .panel-tab .tab-icon { font-size: 1rem; }
+    .panel-tab .new-badge {
+      background: var(--accent-pink);
+      color: white;
+      font-size: 0.5rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.1em;
+    }
+    /* END: SIDE PANELS NAV */
+
+    /* ====================================================
+       SOCIAL HANDLES SECTION
+    ==================================================== */
+    /* START: SOCIAL */
+    #social {
+      position: relative;
+    }
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .social-card {
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-decoration: none;
+      color: var(--white);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .social-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    .social-icon {
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+    .social-platform {
+      font-family: var(--font-tech);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 4px;
+    }
+    .social-handle {
+      font-family: var(--font-brand);
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+    .social-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+    }
+    .social-cta {
+      margin-top: auto;
+      font-family: var(--font-tech);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .social-cta::after {
+      content: '→';
+      transition: transform 0.2s;
+    }
+    .social-card:hover .social-cta::after {
+      transform: translateX(6px);
+    }
+    /* END: SOCIAL */
+
+    /* ====================================================
+       WORKFRAME SECTION
+    ==================================================== */
+    /* START: WORKFRAME */
+    .workframe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .workframe-card {
+      padding: 32px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    .workframe-card:hover { transform: translateY(-6px); }
+    .wf-number {
+      font-family: var(--font-brand);
+      font-size: 4rem;
+      color: rgba(255,255,255,0.05);
+      position: absolute;
+      top: 12px; right: 16px;
+      line-height: 1;
+    }
+    .wf-icon { font-size: 2rem; margin-bottom: 16px; display: block; }
+    .wf-title {
+      font-family: var(--font-brand);
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    .wf-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+    }
+    .tech-pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-family: var(--font-tech);
+      letter-spacing: 0.1em;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      color: var(--accent-cyan);
+      margin: 4px 3px 0 0;
+    }
+    /* END: WORKFRAME */
+
+    /* ====================================================
+       JOIN SECTION (animated form)
+    ==================================================== */
+    /* START: JOIN */
+    #join {
+      position: relative;
+    }
+    .join-wrapper {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 48px;
+    }
+    @media (max-width: 600px) {
+      .join-wrapper { padding: 28px 20px; }
+    }
+
+    /* Form fields */
+    .form-group {
+      margin-bottom: 22px;
+      position: relative;
+    }
+    .form-label {
+      display: block;
+      font-family: var(--font-tech);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+      transition: color 0.2s;
+    }
+    .form-group:focus-within .form-label { color: var(--accent-cyan); }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder { color: rgba(255,255,255,0.25); }
+    .form-input:focus {
+      border-color: rgba(0, 229, 255, 0.5);
+      background: rgba(0, 229, 255, 0.05);
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.12);
+    }
+
+    /* Radio group for Beginner / Experienced */
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .radio-option {
+      flex: 1;
+      min-width: 120px;
+    }
+    .radio-option input { display: none; }
+    .radio-label {
+      display: block;
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      text-align: center;
+      cursor: pointer;
+      font-family: var(--font-tech);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+    }
+    .radio-option input:checked + .radio-label {
+      border-color: var(--purple-bright);
+      background: rgba(155, 51, 255, 0.15);
+      color: var(--white);
+      box-shadow: 0 0 20px rgba(155,51,255,0.3);
+    }
+
+    /* Experience years — shown only when "experienced" is selected */
+    #exp-years-group {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(.23,1,.32,1), opacity 0.3s;
+      opacity: 0;
+    }
+    #exp-years-group.visible {
+      max-height: 120px;
+      opacity: 1;
+    }
+
+    /* Submit button */
+    .form-submit {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, var(--purple-bright), var(--blue-bright));
+      color: white;
+      font-family: var(--font-brand);
+      font-size: 1.1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 30px rgba(155,51,255,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .form-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .form-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 50px rgba(155,51,255,0.6);
+    }
+    .form-submit:hover::before { opacity: 1; }
+
+    /* Success message */
+    #form-success {
+      display: none;
+      text-align: center;
+      padding: 32px;
+      animation: fadeSlideUp 0.5s ease;
+    }
+    #form-success .success-icon { font-size: 3rem; margin-bottom: 12px; }
+    #form-success h3 {
+      font-family: var(--font-brand);
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    #form-success p { color: rgba(255,255,255,0.6); }
+    /* END: JOIN */
+
+    /* ====================================================
+       NEWS / UPCOMING SECTION
+    ==================================================== */
+    /* START: NEWS */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .news-card {
+      padding: 28px 24px;
+      position: relative;
+      transition: transform 0.3s;
+    }
+    .news-card:hover { transform: translateY(-4px); }
+    .news-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.6rem;
+      font-family: var(--font-tech);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .badge-upcoming {
+      background: rgba(255, 77, 166, 0.15);
+      border: 1px solid rgba(255, 77, 166, 0.4);
+      color: var(--accent-pink);
+    }
+    .badge-soon {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--accent-cyan);
+    }
+    .news-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.7); }
+    }
+    .news-title {
+      font-family: var(--font-brand);
+      font-size: 1.25rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .news-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+    }
+    .news-eta {
+      margin-top: 16px;
+      font-family: var(--font-tech);
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    /* END: NEWS */
+
+    /* ====================================================
+       PRIVACY SECTION
+    ==================================================== */
+    /* START: PRIVACY */
+    .privacy-content {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px;
+    }
+    .privacy-content h3 {
+      font-family: var(--font-brand);
+      font-size: 1.15rem;
+      letter-spacing: 0.05em;
+      margin: 28px 0 10px;
+      color: var(--accent-cyan);
+    }
+    .privacy-content p, .privacy-content li {
+      color: rgba(255,255,255,0.65);
+      line-height: 1.85;
+      font-size: 0.9rem;
+    }
+    .privacy-content ul {
+      padding-left: 20px;
+      margin-top: 8px;
+    }
+    .privacy-content li { margin-bottom: 6px; }
+    /* END: PRIVACY */
+
+    /* ====================================================
+       FOOTER
+    ==================================================== */
+    /* START: FOOTER */
+    footer {
+      padding: 48px 0 32px;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-logo {
+      font-family: var(--font-brand);
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .footer-tagline {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 24px;
+      font-family: var(--font-tech);
+      letter-spacing: 0.1em;
+    }
+    .footer-credit {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.25);
+      font-family: var(--font-tech);
+      letter-spacing: 0.12em;
+    }
+    .footer-credit span {
+      color: var(--accent-cyan);
+    }
+    .footer-credit .heart { color: var(--accent-pink); }
+    /* END: FOOTER */
+
+    /* ====================================================
+       SCROLL REVEAL ANIMATION (JS-driven)
+    ==================================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.7s cubic-bezier(.23,1,.32,1), transform 0.7s cubic-bezier(.23,1,.32,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    /* Stagger children */
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.6s cubic-bezier(.23,1,.32,1), transform 0.6s cubic-bezier(.23,1,.32,1);
+    }
+    .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s;    opacity: 1; transform: none; }
+    .reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.1s;  opacity: 1; transform: none; }
+    .reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.2s;  opacity: 1; transform: none; }
+    .reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.3s;  opacity: 1; transform: none; }
+    .reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.4s;  opacity: 1; transform: none; }
+
+    /* ====================================================
+       DIVIDER / SECTION SEPARATOR
+    ==================================================== */
+    .section-sep {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--purple-bright));
+      border-radius: 2px;
+      margin-bottom: 24px;
+    }
+
+    /* Glow line separator between sections */
+    .glow-sep {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(155,51,255,0.4), rgba(68,102,255,0.4), transparent);
+      margin: 0;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="animated-bg">
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <div class="blob blob3"></div>
-</div>
+  <!-- Custom cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
 
-<div id="intro">
-  <div class="intro-name" id="introText"></div>
-  <div class="intro-cursor"></div>
-  <div class="intro-bar" id="introBar"></div>
-</div>
+  <!-- Animated background -->
+  <div id="bg-canvas"></div>
 
-<div class="side-overlay" id="sideOverlay" onclick="closeMenu()"></div>
-<div class="side-menu" id="sideMenu">
-  <button class="side-close" onclick="closeMenu()">✕</button>
-  <a href="index.html" class="active" onclick="closeMenu()"><span class="menu-icon">🏠</span>Home</a>
-  <a href="comics.html" onclick="closeMenu()"><span class="menu-icon">📚</span>Comics</a>
-  <a href="about.html" onclick="closeMenu()"><span class="menu-icon">👤</span>About</a>
-  <a href="privacy.html" onclick="closeMenu()"><span class="menu-icon">🔒</span>Privacy</a>
-</div>
+  <!-- Floating particles container (JS will populate) -->
+  <div id="particles"></div>
 
-<div class="content">
-<nav>
-  <a href="index.html" class="logo">ROCORAFT</a>
-  <ul class="nav-links">
-    <li><a href="index.html" class="active">Home</a></li>
-    <li><a href="comics.html">Comics</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="privacy.html">Privacy</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </div>
-</nav>
-
-<div class="hero">
-  <div class="hero-tag fade-up">Comic E-Books — Read Online Free</div>
-  <h1 class="fade-up">
-    <span class="line1">YOUR WORLD.</span><br>
-    <span class="line2">YOUR STORIES.</span><br>
-    <span class="line3">YOUR COMICS.</span>
-  </h1>
-  <p class="fade-up">Rocoraft is your ultimate destination for comic e-books across all genres. Action, Fantasy, Horror, Comedy and more — read online, anytime, anywhere. Completely free.</p>
-  <div class="hero-btns fade-up">
-    <a href="comics.html" class="btn-primary">Start Reading</a>
-    <a href="about.html" class="btn-outline">About Rocoraft</a>
-  </div>
-</div>
-
-<div class="stats-bar">
-  <div class="stats-grid fade-up">
-    <div class="stat-item"><div class="stat-num red">500+</div><div class="stat-label">Comics Available</div></div>
-    <div class="stat-item"><div class="stat-num yellow">6</div><div class="stat-label">Genres</div></div>
-    <div class="stat-item"><div class="stat-num blue">10K+</div><div class="stat-label">Readers</div></div>
-    <div class="stat-item"><div class="stat-num green">Free</div><div class="stat-label">Always</div></div>
-  </div>
-</div>
-
-<section class="section" id="genres">
-  <span class="section-label fade-up">Browse by Genre</span>
-  <h2 class="fade-up">Every story.<br>Every world.</h2>
-  <div class="genre-grid">
-    <a href="comics.html" class="genre-card action fade-up">
-      <span class="genre-badge badge-hot">HOT</span>
-      <span class="genre-icon">⚡</span>
-      <h3>Action</h3>
-      <p>Epic battles, heroic journeys and non-stop thrills.</p>
+  <!-- ========================================
+       NAVIGATION BAR
+  ======================================== -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <!-- Brand logo with TM mark -->
+    <a href="#hero" class="nav-brand">
+      <!-- Logo image — Image 2 (the d-pad logo) -->
+      <img src="Yellow_Minimalist_Video_Game_Developer_Studio_Logo-8.png"
+           alt="Rocoraft Logo"
+           class="nav-logo-img"
+           onerror="this.style.display='none'" />
+      <span class="nav-brand-name">Rocoraft<sup class="tm">TM</sup></span>
     </a>
-    <a href="comics.html" class="genre-card fantasy fade-up">
-      <span class="genre-badge badge-new">NEW</span>
-      <span class="genre-icon">✨</span>
-      <h3>Fantasy</h3>
-      <p>Dragons, magic and worlds beyond imagination.</p>
-    </a>
-    <a href="comics.html" class="genre-card horror fade-up">
-      <span class="genre-icon">👻</span>
-      <h3>Horror</h3>
-      <p>Dark tales that keep you up at night.</p>
-    </a>
-    <a href="comics.html" class="genre-card comedy fade-up">
-      <span class="genre-badge badge-hot">HOT</span>
-      <span class="genre-icon">😂</span>
-      <h3>Comedy</h3>
-      <p>Laugh out loud stories for everyone.</p>
-    </a>
-    <a href="comics.html" class="genre-card scifi fade-up">
-      <span class="genre-badge badge-new">NEW</span>
-      <span class="genre-icon">🚀</span>
-      <h3>Sci-Fi</h3>
-      <p>Future tech, space and mind-bending science.</p>
-    </a>
-    <a href="comics.html" class="genre-card romance fade-up">
-      <span class="genre-icon">💫</span>
-      <h3>Romance</h3>
-      <p>Heartfelt stories of love and connection.</p>
-    </a>
-  </div>
-</section>
 
-<div class="featured-section">
-  <span class="section-label fade-up">Featured This Week</span>
-  <div class="featured-card fade-up">
-    <div class="comic-cover">
-      <div class="comic-cover-inner">
-        <div style="font-size:2.5rem;">⚡</div>
-        <div style="font-family:'Norwester',sans-serif;font-size:0.65rem;letter-spacing:2px;color:var(--yellow);">ROCORAFT</div>
+    <!-- Desktop nav links -->
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#social">Connect</a></li>
+      <li><a href="#workframe">Workframe</a></li>
+      <li><a href="#news">News</a></li>
+      <li><a href="#join">Join</a></li>
+    </ul>
+
+    <!-- Mobile hamburger toggle -->
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ========================================
+       HERO SECTION
+  ======================================== -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-content">
+
+        <!-- Floating logo -->
+        <img src="Yellow_Minimalist_Video_Game_Developer_Studio_Logo-8.png"
+             alt="Rocoraft"
+             class="hero-logo"
+             onerror="this.style.background='linear-gradient(135deg,#6b00c8,#4466ff)'; this.style.display='block';" />
+
+        <p class="hero-eyebrow">Where Code Meets Culture</p>
+
+        <!-- Main brand title with gradient -->
+        <h1 class="hero-title gradient-text brand-font">Rocoraft<sup class="tm" style="-webkit-text-fill-color:rgba(255,255,255,0.5); font-size:1.2rem;">TM</sup></h1>
+
+        <p class="hero-tagline">
+          Coding. Web Development. AI. Tech — not just reviews, but a <strong style="color:var(--accent-cyan)">movement</strong>.
+          Built for GenZ. Built for India. Built for the world.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#join" class="btn-primary">Join the Crew →</a>
+          <a href="#about" class="btn-ghost">Our Story</a>
+        </div>
       </div>
     </div>
-    <div>
-      <div class="featured-label">FEATURED</div>
-      <h3>Thunder Legion — Rise of the Storm</h3>
-      <p>When the ancient storm gods return to reclaim the earth, only a ragtag team of unlikely heroes stands between humanity and total annihilation. An epic action adventure that will keep you on the edge of your seat from page one.</p>
-      <div class="comic-meta">
-        <span class="meta-tag">Action</span>
-        <span class="meta-tag">Adventure</span>
-        <span class="meta-tag">48 Pages</span>
-        <span class="meta-tag">Free to Read</span>
-      </div>
-      <a href="#" class="read-now">Read Now — Free</a>
+
+    <!-- Scroll hint -->
+    <div class="scroll-hint">
+      SCROLL<span class="scroll-arrow"></span>
     </div>
-  </div>
-</div>
+  </section>
 
-<div class="how-section">
-  <span class="section-label fade-up">How It Works</span>
-  <h2 class="fade-up">Reading made<br>ridiculously simple.</h2>
-  <div class="steps-grid">
-    <div class="step-card fade-up"><div class="step-num">01</div><h3>Browse</h3><p>Explore hundreds of comics across all genres — new titles added regularly.</p></div>
-    <div class="step-card fade-up"><div class="step-num">02</div><h3>Pick</h3><p>Choose your favourite genre and find a story that speaks to you.</p></div>
-    <div class="step-card fade-up"><div class="step-num">03</div><h3>Read</h3><p>Read online instantly — no download needed, no account required.</p></div>
-    <div class="step-card fade-up"><div class="step-num">04</div><h3>Enjoy</h3><p>Completely free. Always. Because great stories should be for everyone.</p></div>
-  </div>
-</div>
+  <div class="glow-sep"></div>
 
-<div class="contact-section" id="contact">
-  <span class="section-label fade-up">Contact</span>
-  <h2 class="fade-up">Got a story idea<br>or want to partner?</h2>
-  <div class="contact-box fade-up">
-    <p>Whether you are a comic artist, writer, publisher or just a fan with a great idea — we would love to hear from you. Rocoraft is always looking for new stories to share with the world.</p>
-    <a href="mailto:rocoraft.business@gmail.com" class="contact-email">rocoraft.business@gmail.com</a>
-  </div>
-</div>
+  <!-- ========================================
+       PANELS ROW (Sidebar-style quick nav — like image 3)
+  ======================================== -->
+  <section id="panels" style="padding: 32px 0;">
+    <div class="container">
+      <div class="panels-row reveal-stagger">
+        <button class="panel-tab active" onclick="scrollTo('#about')">
+          <span class="tab-icon">👤</span> About
+        </button>
+        <button class="panel-tab" onclick="scrollTo('#workframe')">
+          <span class="tab-icon">⚙️</span> Workframe
+        </button>
+        <button class="panel-tab" onclick="scrollTo('#join')">
+          <span class="tab-icon">🚀</span> Join
+        </button>
+        <button class="panel-tab" onclick="scrollTo('#privacy')">
+          <span class="tab-icon">🔒</span> Privacy
+        </button>
+        <button class="panel-tab" onclick="scrollTo('#news')">
+          <span class="tab-icon">📡</span> News
+          <span class="new-badge">NEW</span>
+        </button>
+      </div>
+    </div>
+  </section>
 
-<footer>
-  <div class="footer-links">
-    <a href="comics.html">Comics</a>
-    <a href="about.html">About</a>
-    <a href="privacy.html">Privacy</a>
-    <a href="#contact">Contact</a>
-  </div>
-  Made by <span>ROCORAFT TEAM</span> &nbsp;·&nbsp; 2026
-</footer>
-</div>
+  <div class="glow-sep"></div>
 
-<script>
-const text="ROCORAFT";
-let i=0;
-const el=document.getElementById('introText');
-const bar=document.getElementById('introBar');
-const intro=document.getElementById('intro');
-function type(){
-  if(i<text.length){el.textContent+=text[i];i++;setTimeout(type,130);}
-  else{bar.style.width='300px';setTimeout(()=>{intro.classList.add('hide');document.querySelectorAll('.fade-up').forEach((el,idx)=>{setTimeout(()=>el.classList.add('visible'),idx*80);});},900);}
-}
-setTimeout(type,400);
-const observer=new IntersectionObserver(e=>{e.forEach(i=>{if(i.isIntersecting)i.target.classList.add('visible');});},{threshold:0.1});
-document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
-function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('sideMenu').classList.toggle('open');document.getElementById('sideOverlay').classList.toggle('open');}
-function closeMenu(){document.getElementById('hamburger').classList.remove('open');document.getElementById('sideMenu').classList.remove('open');document.getElementById('sideOverlay').classList.remove('open');}
-</script>
+  <!-- ========================================
+       ABOUT SECTION
+  ======================================== -->
+  <section id="about">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-sep"></div>
+        <h2 class="section-title gradient-text">About Rocoraft</h2>
+        <p class="section-subtitle">Beginning a journey — together</p>
+      </div>
+
+      <div class="about-grid">
+        <!-- Story text -->
+        <div class="about-text reveal">
+          <p>
+            <strong>Rocoraft</strong> is not just a channel — it's a revolution in how India learns and builds with technology.
+            Founded with a singular vision: make <strong>AI, coding, and web development</strong> accessible to every GenZ mind
+            in India and beyond.
+          </p>
+          <p>
+            We don't do typical product reviews. We go deeper — building, breaking, and understanding the tech that
+            <strong>shapes tomorrow</strong>. From raw code to intelligent systems, every post, every video, every thread
+            is a step toward a more empowered generation.
+          </p>
+          <p>
+            <strong>GenZ will grow. India will grow.</strong> And Rocoraft will be right there, lighting the path.
+          </p>
+
+          <!-- Founder badge -->
+          <div class="founder-badge glass-card" style="border-radius: 18px;">
+            <div class="founder-avatar">R</div>
+            <div class="founder-info">
+              <small>Founder & Visionary</small>
+              <strong>Rik Patra</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="about-stats reveal-stagger">
+          <div class="stat-card glass-card">
+            <div class="stat-num gradient-text">AI</div>
+            <div class="stat-label">Focused</div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-num gradient-text">Web</div>
+            <div class="stat-label">Dev Driven</div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-num gradient-text">GenZ</div>
+            <div class="stat-label">Powered</div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-num gradient-text">🇮🇳</div>
+            <div class="stat-label">India Built</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-sep"></div>
+
+  <!-- ========================================
+       SOCIAL HANDLES / REDIRECT SECTION
+  ======================================== -->
+  <section id="social">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-sep"></div>
+        <h2 class="section-title gradient-text">Find Us Online</h2>
+        <p class="section-subtitle">Connect across platforms — the Rocoraft universe</p>
+      </div>
+
+      <div class="social-grid reveal-stagger">
+
+        <!-- YouTube -->
+        <a href="https://youtube.com/@Rocoraft" target="_blank" rel="noopener" class="social-card glass-card">
+          <div class="social-icon" style="background: rgba(255,0,0,0.15); border: 1px solid rgba(255,0,0,0.3);">
+            <!-- YouTube SVG icon -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#ff4444">
+              <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="social-platform">YouTube</div>
+            <div class="social-handle gradient-text brand-font">@Rococraft</div>
+          </div>
+          <div class="social-desc">
+            Deep dives into AI, web dev tutorials, coding challenges, and tech that actually matters.
+          </div>
+          <div class="social-cta">Subscribe Now</div>
+        </a>
+
+        <!-- Instagram -->
+        <a href="https://instagram.com/rocoraft" target="_blank" rel="noopener" class="social-card glass-card">
+          <div class="social-icon" style="background: rgba(225,48,108,0.15); border: 1px solid rgba(225,48,108,0.3);">
+            <!-- Instagram SVG icon -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="url(#ig-grad)">
+              <defs>
+                <linearGradient id="ig-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#f09433"/>
+                  <stop offset="25%" style="stop-color:#e6683c"/>
+                  <stop offset="50%" style="stop-color:#dc2743"/>
+                  <stop offset="75%" style="stop-color:#cc2366"/>
+                  <stop offset="100%" style="stop-color:#bc1888"/>
+                </linearGradient>
+              </defs>
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="social-platform">Instagram</div>
+            <div class="social-handle gradient-text brand-font">@rocoraft</div>
+          </div>
+          <div class="social-desc">
+            Reels, quick code tips, AI news, behind-the-scenes, and tech aesthetics — all in one place.
+          </div>
+          <div class="social-cta">Follow Now</div>
+        </a>
+
+        <!-- X / Twitter -->
+        <a href="https://x.com/rocoraft" target="_blank" rel="noopener" class="social-card glass-card">
+          <div class="social-icon" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.265 5.638L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="social-platform">X (Twitter)</div>
+            <div class="social-handle gradient-text brand-font">@rocoraft</div>
+          </div>
+          <div class="social-desc">
+            Hot takes on AI, instant dev tips, trending tech discourse — join the conversation in real time.
+          </div>
+          <div class="social-cta">Follow Now</div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-sep"></div>
+
+  <!-- ========================================
+       WORKFRAME SECTION
+  ======================================== -->
+  <section id="workframe">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-sep"></div>
+        <h2 class="section-title gradient-text">Workframe</h2>
+        <p class="section-subtitle">How we build — the Rocoraft stack</p>
+      </div>
+
+      <div class="workframe-grid reveal-stagger">
+
+        <!-- Card 1: Frontend -->
+        <div class="workframe-card glass-card">
+          <span class="wf-number">01</span>
+          <span class="wf-icon">🎨</span>
+          <div class="wf-title brand-font">Frontend</div>
+          <p class="wf-desc">
+            Pixel-perfect, animated interfaces built with React and Next.js.
+            Styled with Tailwind CSS for speed and consistency.
+          </p>
+          <span class="tech-pill">React</span>
+          <span class="tech-pill">Next.js</span>
+          <span class="tech-pill">Tailwind</span>
+        </div>
+
+        <!-- Card 2: Backend -->
+        <div class="workframe-card glass-card">
+          <span class="wf-number">02</span>
+          <span class="wf-icon">⚙️</span>
+          <div class="wf-title brand-font">Backend</div>
+          <p class="wf-desc">
+            Robust APIs and server logic powered by Node.js.
+            Scalable, fast, and built to handle real production loads.
+          </p>
+          <span class="tech-pill">Node.js</span>
+          <span class="tech-pill">Express</span>
+          <span class="tech-pill">REST API</span>
+        </div>
+
+        <!-- Card 3: AI & Automation -->
+        <div class="workframe-card glass-card">
+          <span class="wf-number">03</span>
+          <span class="wf-icon">🤖</span>
+          <div class="wf-title brand-font">AI Layer</div>
+          <p class="wf-desc">
+            Integrating cutting-edge AI models and APIs to build intelligent,
+            context-aware experiences for the next generation.
+          </p>
+          <span class="tech-pill">Claude AI</span>
+          <span class="tech-pill">OpenAI</span>
+          <span class="tech-pill">Automation</span>
+        </div>
+
+        <!-- Card 4: Hosting -->
+        <div class="workframe-card glass-card">
+          <span class="wf-number">04</span>
+          <span class="wf-icon">☁️</span>
+          <div class="wf-title brand-font">Hosting</div>
+          <p class="wf-desc">
+            Lightning-fast deployments with GitHub CI/CD and Vercel.
+            Open source, version-controlled, and globally distributed.
+          </p>
+          <span class="tech-pill">GitHub</span>
+          <span class="tech-pill">Vercel</span>
+          <span class="tech-pill">CI/CD</span>
+        </div>
+
+        <!-- Card 5: Content -->
+        <div class="workframe-card glass-card">
+          <span class="wf-number">05</span>
+          <span class="wf-icon">📹</span>
+          <div class="wf-title brand-font">Content</div>
+          <p class="wf-desc">
+            Videos, reels, threads — not reviews, but real explorations.
+            We build, we break, we document everything.
+          </p>
+          <span class="tech-pill">YouTube</span>
+          <span class="tech-pill">Instagram</span>
+          <span class="tech-pill">X</span>
+        </div>
+
+        <!-- Card 6: Community -->
+        <div class="workframe-card glass-card">
+          <span class="wf-number">06</span>
+          <span class="wf-icon">🌐</span>
+          <div class="wf-title brand-font">Community</div>
+          <p class="wf-desc">
+            Beginners and experienced devs alike — all welcome.
+            Rocoraft is a space to grow together, not compete.
+          </p>
+          <span class="tech-pill">Open Collab</span>
+          <span class="tech-pill">Mentorship</span>
+          <span class="tech-pill">GenZ</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-sep"></div>
+
+  <!-- ========================================
+       NEWS / UPCOMING SECTION
+  ======================================== -->
+  <section id="news">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-sep"></div>
+        <h2 class="section-title gradient-text">Upcoming News</h2>
+        <p class="section-subtitle">What's brewing in the Rocoraft lab</p>
+      </div>
+
+      <div class="news-grid reveal-stagger">
+
+        <div class="news-card glass-card">
+          <div class="news-badge badge-upcoming">
+            <div class="news-dot" style="background:var(--accent-pink);"></div> Coming Soon
+          </div>
+          <div class="news-title brand-font">AI Crash Course Series</div>
+          <p class="news-desc">
+            A full free series on practical AI — from prompting to building your own models.
+            Made for absolute beginners. Zero jargon.
+          </p>
+          <div class="news-eta">ETA: Season 1 · 2025</div>
+        </div>
+
+        <div class="news-card glass-card">
+          <div class="news-badge badge-soon">
+            <div class="news-dot" style="background:var(--accent-cyan);"></div> In Progress
+          </div>
+          <div class="news-title brand-font">Rocoraft Open Projects</div>
+          <p class="news-desc">
+            Open-source builds where the community contributes. Real projects.
+            Real GitHub repos. Real collaboration.
+          </p>
+          <div class="news-eta">ETA: Q2 · 2025</div>
+        </div>
+
+        <div class="news-card glass-card">
+          <div class="news-badge badge-upcoming">
+            <div class="news-dot" style="background:var(--accent-pink);"></div> Planned
+          </div>
+          <div class="news-title brand-font">Next.js Masterclass</div>
+          <p class="news-desc">
+            Full-stack web development from zero to production.
+            App Router, server actions, databases, auth — all covered.
+          </p>
+          <div class="news-eta">ETA: Q3 · 2025</div>
+        </div>
+
+        <div class="news-card glass-card">
+          <div class="news-badge badge-soon">
+            <div class="news-dot" style="background:var(--accent-cyan);"></div> Research Phase
+          </div>
+          <div class="news-title brand-font">India Tech Report</div>
+          <p class="news-desc">
+            Monthly deep-dives into what's happening in India's tech ecosystem —
+            startups, research, opportunities, and gaps.
+          </p>
+          <div class="news-eta">ETA: Monthly · Starting 2025</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-sep"></div>
+
+  <!-- ========================================
+       JOIN SECTION (animated form)
+  ======================================== -->
+  <section id="join">
+    <div class="container">
+      <div class="reveal" style="text-align:center; margin-bottom: 0;">
+        <div class="section-sep" style="margin: 0 auto 16px;"></div>
+        <h2 class="section-title gradient-text">Join the Mission</h2>
+        <p class="section-subtitle">Be part of something bigger — Rocoraft needs you</p>
+      </div>
+
+      <div class="join-wrapper glass-card reveal">
+
+        <!-- The join form -->
+        <form id="join-form" novalidate>
+
+          <!-- Full name -->
+          <div class="form-group">
+            <label class="form-label" for="f-name">Full Name</label>
+            <input class="form-input" type="text" id="f-name" name="name" placeholder="Your name" required />
+          </div>
+
+          <!-- Gmail -->
+          <div class="form-group">
+            <label class="form-label" for="f-email">Gmail Address</label>
+            <input class="form-input" type="email" id="f-email" name="email" placeholder="yourname@gmail.com" required />
+          </div>
+
+          <!-- Phone -->
+          <div class="form-group">
+            <label class="form-label" for="f-phone">Phone Number</label>
+            <input class="form-input" type="tel" id="f-phone" name="phone" placeholder="+91 00000 00000" />
+          </div>
+
+          <!-- Address -->
+          <div class="form-group">
+            <label class="form-label" for="f-address">Address / City</label>
+            <input class="form-input" type="text" id="f-address" name="address" placeholder="City, State, Country" />
+          </div>
+
+          <!-- Experience level radio -->
+          <div class="form-group">
+            <label class="form-label">Your Level</label>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="level" id="level-beginner" value="beginner" checked
+                       onchange="handleLevelChange(this)" />
+                <label class="radio-label" for="level-beginner">🌱 Beginner</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="level" id="level-experienced" value="experienced"
+                       onchange="handleLevelChange(this)" />
+                <label class="radio-label" for="level-experienced">⚡ Experienced</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Years of experience — shown only if experienced is selected -->
+          <div class="form-group" id="exp-years-group">
+            <label class="form-label" for="f-years">Years of Experience</label>
+            <input class="form-input" type="number" id="f-years" name="years" min="1" max="40"
+                   placeholder="e.g. 3" />
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="form-submit brand-font">
+            Launch Me In 🚀
+          </button>
+
+        </form>
+
+        <!-- Success message (hidden by default, shown after submit) -->
+        <div id="form-success">
+          <div class="success-icon">🎉</div>
+          <h3 class="gradient-text brand-font">You're In!</h3>
+          <p>Welcome to the Rocoraft crew. We'll reach out soon.<br />Stay curious. Keep building.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-sep"></div>
+
+  <!-- ========================================
+       PRIVACY SECTION
+  ======================================== -->
+  <section id="privacy">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-sep"></div>
+        <h2 class="section-title gradient-text">Privacy Policy</h2>
+        <p class="section-subtitle">Your trust is our code — we protect it</p>
+      </div>
+
+      <div class="privacy-content glass-card reveal">
+
+        <p>
+          At <strong>Rocoraft</strong>, your privacy matters as much as clean code. This policy explains
+          what we collect, why, and how we protect it.
+          Last updated: <span style="color:var(--accent-cyan);">April 2025</span>.
+        </p>
+
+        <h3>What We Collect</h3>
+        <p>When you fill out the Join form, we collect:</p>
+        <ul>
+          <li>Your name and email address (for communication)</li>
+          <li>Phone number and city (optional, for community events)</li>
+          <li>Your experience level (to personalize content for you)</li>
+        </ul>
+
+        <h3>How We Use It</h3>
+        <ul>
+          <li>To send you updates about Rocoraft content and launches</li>
+          <li>To understand our community and improve what we make</li>
+          <li>We will <strong>never sell</strong> your data to third parties</li>
+        </ul>
+
+        <h3>Cookies & Analytics</h3>
+        <p>
+          This site may use basic analytics (like Vercel Analytics) to understand traffic patterns.
+          No invasive tracking. No ad targeting. No surveillance capitalism.
+        </p>
+
+        <h3>Your Rights</h3>
+        <p>
+          You can request deletion of your data at any time by emailing us through any of our social handles.
+          We will remove your data within 7 days, no questions asked.
+        </p>
+
+        <h3>Third-Party Links</h3>
+        <p>
+          Links to YouTube, Instagram, and X are subject to their respective privacy policies.
+          We encourage you to review them independently.
+        </p>
+
+        <h3>Contact</h3>
+        <p>
+          Questions? Reach out via <a href="https://instagram.com/rocoraft" target="_blank"
+          style="color:var(--accent-cyan); text-decoration:none;">@rocoraft</a> on Instagram or X.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-sep"></div>
+
+  <!-- ========================================
+       FOOTER
+  ======================================== -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo gradient-text brand-font">
+        Rocoraft<sup style="font-size:0.5rem; vertical-align:super; color:rgba(255,255,255,0.5);">TM</sup>
+      </div>
+      <div class="footer-tagline">Code · Create · Elevate · Repeat</div>
+      <div class="footer-credit">
+        Made with <span class="heart">♥</span> by <span>Rocoraft Team</span>
+        &nbsp;·&nbsp; Special Partner: <span>Claude (Anthropic)</span>
+        &nbsp;·&nbsp; Founder: <span>Rik Patra</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================
+       JAVASCRIPT
+       All JS is modular and heavily commented
+       so future team members can understand and extend it
+  ======================================== -->
+  <script>
+    /* ====================================================
+       CUSTOM CURSOR
+       Follows mouse, scales on hover, changes color on links
+    ==================================================== */
+    const cursor     = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursor-ring');
+    let mouseX = 0, mouseY = 0;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.left     = mouseX + 'px';
+      cursor.style.top      = mouseY + 'px';
+      cursorRing.style.left = mouseX + 'px';
+      cursorRing.style.top  = mouseY + 'px';
+    });
+
+    // Expand cursor on interactive elements
+    document.querySelectorAll('a, button, input, .social-card, .workframe-card, .panel-tab').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width  = '8px';
+        cursor.style.height = '8px';
+        cursorRing.style.width  = '56px';
+        cursorRing.style.height = '56px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width  = '14px';
+        cursor.style.height = '14px';
+        cursorRing.style.width  = '40px';
+        cursorRing.style.height = '40px';
+      });
+    });
+
+    /* ====================================================
+       FLOATING PARTICLES
+       Creates animated particles of various sizes and colors
+       matching the purple-blue brand palette
+    ==================================================== */
+    const particlesContainer = document.getElementById('particles');
+    const PARTICLE_COUNT = 40;
+    const COLORS = [
+      'rgba(155,51,255,0.6)',
+      'rgba(68,102,255,0.5)',
+      'rgba(0,229,255,0.4)',
+      'rgba(255,77,166,0.35)',
+      'rgba(245,240,216,0.25)', // cream from logo
+    ];
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+
+      const size = Math.random() * 6 + 2; // 2px – 8px
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      const left = Math.random() * 100;
+      const dur  = Math.random() * 15 + 8; // 8s – 23s
+      const delay = Math.random() * 12;    // start at different times
+
+      p.style.cssText = `
+        width: ${size}px;
+        height: ${size}px;
+        background: ${color};
+        left: ${left}%;
+        animation-duration: ${dur}s;
+        animation-delay: -${delay}s;
+        box-shadow: 0 0 ${size * 3}px ${color};
+      `;
+      particlesContainer.appendChild(p);
+    }
+
+    /* ====================================================
+       MOBILE NAV TOGGLE
+       Toggles the nav links open/closed on small screens
+    ==================================================== */
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks  = document.getElementById('nav-links');
+
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close nav when a link is clicked (mobile UX)
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    /* ====================================================
+       SCROLL REVEAL (Intersection Observer)
+       Animates elements into view as user scrolls
+       Add class "reveal" or "reveal-stagger" to any element
+    ==================================================== */
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target); // only animate once
+        }
+      });
+    }, {
+      threshold: 0.12,      // trigger when 12% of element is visible
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    // Observe all reveal elements
+    document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => {
+      revealObserver.observe(el);
+    });
+
+    /* ====================================================
+       PANEL TABS
+       Generic scroll-to function used by panel buttons
+    ==================================================== */
+    function scrollTo(selector) {
+      const el = document.querySelector(selector);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Update active tab
+      document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+    }
+
+    // Highlight active nav link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+
+    const activeObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navAnchors.forEach(a => {
+            a.style.color = a.getAttribute('href') === '#' + entry.target.id
+              ? 'white' : 'rgba(255,255,255,0.7)';
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+
+    sections.forEach(s => activeObserver.observe(s));
+
+    /* ====================================================
+       FORM: EXPERIENCE LEVEL TOGGLE
+       Shows "years of experience" field only when
+       the user selects "Experienced"
+    ==================================================== */
+    function handleLevelChange(radio) {
+      const yearsGroup = document.getElementById('exp-years-group');
+      if (radio.value === 'experienced') {
+        yearsGroup.classList.add('visible');
+      } else {
+        yearsGroup.classList.remove('visible');
+        document.getElementById('f-years').value = ''; // clear field
+      }
+    }
+
+    /* ====================================================
+       FORM SUBMISSION
+       Handles validation and shows success animation.
+       TO INTEGRATE WITH BACKEND:
+         Replace the setTimeout block with a fetch() call to
+         your Node.js API endpoint (e.g. POST /api/join)
+    ==================================================== */
+    const joinForm    = document.getElementById('join-form');
+    const formSuccess = document.getElementById('form-success');
+
+    joinForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Basic validation
+      const name  = document.getElementById('f-name').value.trim();
+      const email = document.getElementById('f-email').value.trim();
+      if (!name || !email) {
+        // Shake invalid fields
+        [document.getElementById('f-name'), document.getElementById('f-email')].forEach(input => {
+          if (!input.value.trim()) {
+            input.style.borderColor = 'rgba(255,77,166,0.8)';
+            input.animate([
+              { transform: 'translateX(-8px)' },
+              { transform: 'translateX(8px)' },
+              { transform: 'translateX(-4px)' },
+              { transform: 'translateX(4px)' },
+              { transform: 'translateX(0)' }
+            ], { duration: 400, easing: 'ease' });
+            setTimeout(() => input.style.borderColor = '', 1500);
+          }
+        });
+        return;
+      }
+
+      // Get form data (ready to send to Node.js backend)
+      const formData = {
+        name:    name,
+        email:   email,
+        phone:   document.getElementById('f-phone').value.trim(),
+        address: document.getElementById('f-address').value.trim(),
+        level:   document.querySelector('input[name="level"]:checked')?.value,
+        years:   document.getElementById('f-years').value || null,
+      };
+
+      console.log('Form submission:', formData);
+      /* 
+        TODO (Backend Integration): 
+        Uncomment and update when Node.js backend is ready:
+        
+        try {
+          const res = await fetch('/api/join', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          });
+          const data = await res.json();
+          console.log('Server response:', data);
+        } catch (err) {
+          console.error('Submission error:', err);
+          return;
+        }
+      */
+
+      // Animate form out, success in
+      joinForm.style.opacity = '0';
+      joinForm.style.transform = 'scale(0.95)';
+      joinForm.style.transition = 'all 0.4s ease';
+
+      setTimeout(() => {
+        joinForm.style.display = 'none';
+        formSuccess.style.display = 'block';
+        formSuccess.animate([
+          { opacity: 0, transform: 'scale(0.9)' },
+          { opacity: 1, transform: 'scale(1)' }
+        ], { duration: 500, easing: 'cubic-bezier(.23,1,.32,1)', fill: 'forwards' });
+      }, 400);
+    });
+
+    /* ====================================================
+       NAVBAR BACKGROUND ON SCROLL
+       Increases backdrop blur / opacity when user scrolls
+    ==================================================== */
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        navbar.style.background = 'rgba(10, 0, 80, 0.85)';
+      } else {
+        navbar.style.background = 'rgba(10, 0, 80, 0.5)';
+      }
+    }, { passive: true });
+
+    /* ====================================================
+       COUNTER ANIMATION (for stat cards)
+       Animates numbers from 0 to target when in view
+       Currently used for future stat expansions
+    ==================================================== */
+    function animateCounter(el, target, duration = 1500) {
+      let start = 0;
+      const step = timestamp => {
+        if (!start) start = timestamp;
+        const progress = Math.min((timestamp - start) / duration, 1);
+        el.textContent = Math.floor(progress * target);
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+      };
+      requestAnimationFrame(step);
+    }
+
+    /* ====================================================
+       TILT EFFECT ON GLASS CARDS
+       Subtle 3D tilt on mouse move for depth
+    ==================================================== */
+    document.querySelectorAll('.glass-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width  - 0.5; // -0.5 to 0.5
+        const y = (e.clientY - rect.top)  / rect.height - 0.5;
+        card.style.transform = `perspective(600px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateZ(4px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.style.transition = 'transform 0.5s cubic-bezier(.23,1,.32,1)';
+        setTimeout(() => card.style.transition = '', 500);
+      });
+    });
+
+    /* ====================================================
+       CONSOLE BRANDING
+       Because devs inspect the console — make it count 😄
+    ==================================================== */
+    console.log('%c🎮 ROCORAFT™', 'font-family: monospace; font-size: 24px; color: #9b33ff; font-weight: bold;');
+    console.log('%cCode · Create · Elevate · Repeat', 'color: #00e5ff; font-size: 12px; letter-spacing: 0.2em;');
+    console.log('%cBuilt by Rocoraft Team + Claude (AI Partner)', 'color: rgba(255,255,255,0.5); font-size: 11px;');
+    console.log('%cFounder: Rik Patra', 'color: rgba(255,255,255,0.4); font-size: 10px;');
+  </script>
+
 </body>
 </html>
